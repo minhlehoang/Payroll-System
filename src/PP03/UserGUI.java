@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -48,6 +49,7 @@ public class UserGUI extends JFrame implements ActionListener{
 	
 	static PayRecord[] recordArray;
 	
+	PayRoll payroll_rec;
 	
 	static int k = 0; //number of user attempts
 	static boolean success = false; // attempt status marker
@@ -117,6 +119,7 @@ public class UserGUI extends JFrame implements ActionListener{
 	
 	  
 	  // declare and initialize variables
+	  int eid = 0;
 	  String firstName =""; // first name
 	  String lastName = ""; // last name
 	  int	houseNumber = 0;
@@ -134,12 +137,9 @@ public class UserGUI extends JFrame implements ActionListener{
 	  double hourlyRate= 0;
 	  Status status;
 
-
-	
-	  
 				// constructor
 				UserGUI(int localNumberOfPersons){
-					
+					payroll_rec = new PayRoll("PayRoll.txt", localNumberOfPersons);
 					
 					// create person array of size nPersons
 					//personArray = new Person[localNumberOfPersons];
@@ -217,8 +217,8 @@ public class UserGUI extends JFrame implements ActionListener{
 					  
 					  
 					  // radio buttons
-					  radFull = new JRadioButton("Student", true);
-					  radHourly= new JRadioButton("Faculty");
+					  radFull = new JRadioButton("FULLTIME", true);
+					  radHourly= new JRadioButton("HOURLY");
 				      ButtonGroup group = new ButtonGroup();
 				      group.add(radFull);
 				      group.add(radHourly);
@@ -382,6 +382,15 @@ public class UserGUI extends JFrame implements ActionListener{
 					
 					//Method to implement add button action
 					if(PayRoll.getNumberofrecords()<n){
+						try {
+							eid = Integer.parseInt((eidField.getText().trim()));
+						}
+						catch(Exception ex) {
+							JOptionPane.showMessageDialog(fnField, "Invalid entry for employee ID.");
+							eidField.setText("");
+							eidField.requestFocus();
+							return;
+						}
 						
 						try {
 						firstName = fnField.getText().trim();
@@ -471,31 +480,29 @@ public class UserGUI extends JFrame implements ActionListener{
 							return;
 						}
 						
+						if (radFull.isSelected()) {
+							status = Status.FullTime;
+						}
+						else {
+							status = Status.Hourly;
+						}
 						
-						
-						
-						
-						fnField.setText("");
+				     	// add employee object
+				     	Address address1 = new Address(street, houseNumber, city, state, zipCode); // address object
+						//Employee employee1 = new Employee(firstName, lastName, address1, status, eid);
+				     	payroll_rec.createEmployee(street, houseNumber, city, state, zipCode, status, firstName, lastName, eid);
+						// show added person
+						String message = "Employee number added to list.";
+				     	textArea.setText(message);
+				     	textArea.append(Employee.employees[0].toString());
+				     	
+				     	fnField.setText("");
 						lnField.setText("");
 						houseField.setText("");
 						streetField.setText("");
 						cityField.setText("");
 						stateField.setText("");
 						zipField.setText("");
-						
-						// show added person
-						String message = "Employee number added to list.";
-				     	textArea.setText(message);
-						   	
-						
-				     	// add employee object
-				     	//Address address1 = new Address(street, houseNumber, city, state, zipCode); // address object
-						//Employee employee1 = new Employee(firstName, lastName, address1, status);
-				     
-				     	
-				     	
-				     	
-				     	
 						}
 					else {JOptionPane.showMessageDialog(null, "Array limit.\r\nNo more employees can be entered.");}
 				
@@ -528,7 +535,7 @@ public class UserGUI extends JFrame implements ActionListener{
 						
 						
 						try {
-						//payPeriodStart = payPeriodStartField.getText();
+						payPeriodStart = new SimpleDateFormat("MM/dd/yyyy").parse(payPeriodStartField.getText());
 						//payPeriodStart = 11-11-1998;
 						
 
@@ -543,7 +550,7 @@ public class UserGUI extends JFrame implements ActionListener{
 						
 						
 						try {
-						//payPeriodEnd = payPeriodEndField.getSelectionEnd();
+							payPeriodEnd = new SimpleDateFormat("MM/dd/yyyy").parse(payPeriodEndField.getText());
 						
 
 						} catch (Exception e) {
@@ -571,7 +578,7 @@ public class UserGUI extends JFrame implements ActionListener{
 						
 						
 						
-						/*try {
+						try {
 						String monthlyIncomeS = monthlyIncomeField.getText().trim();
 						monthlyIncome = Integer.parseInt(monthlyIncomeS);
 						if (monthlyIncome<=0) throw new Exception();
@@ -626,7 +633,7 @@ public class UserGUI extends JFrame implements ActionListener{
 							hoursRateField.setText("");
 							hoursRateField.requestFocus();
 							return;
-						}*/
+						}
 						
 						
 						
@@ -645,6 +652,9 @@ public class UserGUI extends JFrame implements ActionListener{
 							hourlyRate= Double.parseDouble(hoursRateFieldS);
 						}
 						
+						// add pay record object
+						
+						
 						
 						payPeriodIDField.setText("");
 						payPeriodStartField.setText("");
@@ -659,7 +669,7 @@ public class UserGUI extends JFrame implements ActionListener{
 						String message = "Employee number added to list.";
 				     	textArea.setText(message);
 			     	
-				     	// add pay record object
+				     	
 				     	
 					}
 			     	
@@ -667,11 +677,6 @@ public class UserGUI extends JFrame implements ActionListener{
 			     	
 			     	
 				} // end pay record add method
-				
-
-		
-				
-				
 				
 				
 				

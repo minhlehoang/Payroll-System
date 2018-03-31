@@ -7,6 +7,7 @@ import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 
 //****************************************
 //
@@ -31,17 +32,21 @@ public class PayRoll {
 	
 	private String fileName;
 	private PayRecord[] payRecords;
+	
 	private static int numberOfRecords = 0;
+	
 	
 	private  double totalNetPay;
 	private  double avgNetPay;
+	
+	
 	
 	public PayRoll(String fileName, int n){
 		
 		this.fileName = fileName;
         this.payRecords = new PayRecord[n];
         
-		numberOfRecords++;
+		//numberOfRecords++; as we run the program and take the user input for the number of record at the beginning, this variable is always 1
 		
 	}
 	
@@ -62,27 +67,30 @@ public class PayRoll {
    
 	public void createEmployee(String street, int houseNumber, String city, String state, int zipCode, Status status, String firstName, String lastName, int eID){
 		// creates a new Employee object and add it to the employees array, you need to pass parameters to this method
-
 		Employee employee1 = new Employee(firstName, lastName, new Address(street, houseNumber, city, state, zipCode), status, eID);
-
-		
-
-		
+		Employee.employees[Employee.numberOfEmployees-1] = employee1;
 	}
 	
  
-	public void createPayRecord(){
+	public void createPayRecord(int pID, Date pStartDate, Date pEndDate, int rid, double payHours, double payRate, double monthlyIncome, int numMonths, Employee employee1){
 		
 		// creates a new PayRecord for an Employee object and add it to  the payRecords array, you need to pass parameters to this method
 		
+			if(employee1.getEmpStatus() == Status.FullTime) {
+				payRecords[PayRecord.numberOfPayRecord-1] = new PayRecord(rid, employee1, new PayPeriod(pID, pStartDate, pEndDate), monthlyIncome, numMonths);
+			}
+			else {
+				payRecords[PayRecord.numberOfPayRecord-1] = new PayRecord(rid, employee1, new PayPeriod(pID, pStartDate, pEndDate), payHours, payRate);
+			}
+			
 	}
 	
 	
-    public  void displayPayRecord(){
-		
+    public void displayPayRecord(JTextArea textArea){
 		// it shows all payroll records for all currently added employee and the total net pay and average net pay in the GUI text area
     	// at should append data to text area, it must not overwrite data in the GUI text area
-		
+		textArea.append(payRecords[PayRecord.numberOfPayRecord-1].toString());
+		textArea.append("\n");
 	}
 
     
@@ -103,6 +111,6 @@ public static int getNumberofrecords() {
 public PayRecord[] getPayRecords() {
 	return payRecords;
 }
-    	
+
 
 }

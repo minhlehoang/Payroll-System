@@ -23,7 +23,8 @@ public class Employee extends Person{
 	
 	private int eID;
     private Status empStatus;
-    private Employee[] employees;
+    static Employee[] employees;
+    public static int numberOfEmployees=0;
    
     
     // 2- add the subclass Employee constructor that calls the super Person class constructor, you should provide input data for all parent class data fields
@@ -34,6 +35,7 @@ public class Employee extends Person{
 		this.address = address;
 		this.empStatus = empStatus;
 		this.eID = eID;
+		numberOfEmployees++;
 	}
     
 	// 3- add setters/getters methods

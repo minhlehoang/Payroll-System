@@ -37,6 +37,8 @@ public class PayRecord {
     public static final int REG_HOURS = 40;
     public static final double OT_RATE = 1.25;
     
+    public static int numberOfPayRecord=0;
+    
     // pay record constructor for hourly employee
     public PayRecord(int id, Employee e, PayPeriod period, double hours, double rate){
     	
@@ -48,6 +50,7 @@ public class PayRecord {
     	this.montlyIncome = 0;
     	this.numMonths = 0;
     	this.payTax = new TaxIncome(grossPay());
+    	numberOfPayRecord++;
   
     }
     
@@ -66,24 +69,28 @@ public class PayRecord {
  }
 
 
- 
-
   // 3- complete the code in the following methods: grossPay() and netPay()
     
     // complete the code to compute the gross pay for the employee based on the employee status
 	public double grossPay(){
-		return (payHours*payRate)+(montlyIncome*numMonths);
-		
+		if(this.employee.getEmpStatus().toString() == "FullTime"){
+			return (montlyIncome*numMonths); //Fulltime status
+		}
+		else {
+			if(payHours > 40) {
+				return (payHours * 10) + ((payHours - 40) * 1.25);
+			}
+			else {
+				return (payHours * 10);
+			}
+		}
 	}
     
   // complete the code in this method to compute the net pay of the employee after taxes (state and federal)
      public double netPay(){
     	// netPay = grossPay() -= payTax;
-    	 return 0;
+    	 return grossPay() - payTax.compIncomeTax(grossPay());
   }
-     
-     
-     
      
      
      // 1- add setters and getters methods
