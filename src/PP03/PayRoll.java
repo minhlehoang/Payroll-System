@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
+
+
 //****************************************
 //
 //			CIS 611	
@@ -31,9 +33,9 @@ import javax.swing.JTextArea;
 public class PayRoll {
 	
 	private String fileName;
-	private PayRecord[] payRecords;
+	static PayRecord[] payRecords;
 	
-	private static int numberOfRecords = 0;
+	//private static int numberOfRecords = 0;
 	
 	
 	private  double totalNetPay;
@@ -68,19 +70,21 @@ public class PayRoll {
 	public void createEmployee(String street, int houseNumber, String city, String state, int zipCode, Status status, String firstName, String lastName, int eID){
 		// creates a new Employee object and add it to the employees array, you need to pass parameters to this method
 		Employee employee1 = new Employee(firstName, lastName, new Address(street, houseNumber, city, state, zipCode), status, eID);
-		Employee.employees[Employee.numberOfEmployees-1] = employee1;
+		Employee.employees [Employee.getNumberOfEmployees()-1] = employee1;
 	}
 	
  
-	public void createPayRecord(int pID, Date pStartDate, Date pEndDate, int rid, double payHours, double payRate, double monthlyIncome, int numMonths, Employee employee1){
+	public void createPayRecord(int pID, Date pStartDate, Date pEndDate, int rid, double payHours, double payRate, double monthlyIncome, int numMonths, Employee employee, Status status){
 		
 		// creates a new PayRecord for an Employee object and add it to  the payRecords array, you need to pass parameters to this method
 		
-			if(employee1.getEmpStatus() == Status.FullTime) {
-				payRecords[PayRecord.numberOfPayRecord-1] = new PayRecord(rid, employee1, new PayPeriod(pID, pStartDate, pEndDate), monthlyIncome, numMonths);
+			if(status == Status.FullTime) {
+				payRecords[PayRecord.numberOfPayRecord] = new PayRecord(rid, employee, new PayPeriod(pID, pStartDate, pEndDate), monthlyIncome, numMonths);
 			}
-			else {
-				payRecords[PayRecord.numberOfPayRecord-1] = new PayRecord(rid, employee1, new PayPeriod(pID, pStartDate, pEndDate), payHours, payRate);
+			
+			
+			if(status == Status.Hourly)  {
+				payRecords[PayRecord.numberOfPayRecord] = new PayRecord(rid, employee, new PayPeriod(pID, pStartDate, pEndDate), payHours, payRate);
 			}
 			
 	}
@@ -103,9 +107,9 @@ public class PayRoll {
 	}
 
 
-public static int getNumberofrecords() {
-	return numberOfRecords;
-}
+//public static int getNumberOfRecords() {
+//	return numberOfRecords;
+//}
 
 
 public PayRecord[] getPayRecords() {

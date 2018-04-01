@@ -10,22 +10,18 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 
-import javax.swing.BoxLayout;
+
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-
 
 
 //****************************************
@@ -47,7 +43,7 @@ import javax.swing.ScrollPaneConstants;
 
 public class UserGUI extends JFrame implements ActionListener{
 	
-	static PayRecord[] recordArray;
+	//static PayRecord[] recordArray;
 	
 	PayRoll payroll_rec;
 	
@@ -178,14 +174,14 @@ public class UserGUI extends JFrame implements ActionListener{
 					  
 					  payPeriodPanelLabel= new JLabel ("Pay Period:",JLabel.LEFT);
 					  payPeriodIDLabel = new JLabel ("Pay Period ID:",JLabel.RIGHT);
-					  payPeriodStartLabel = new JLabel ("Start Date:",JLabel.RIGHT);
-					  payPeriodEndLabel = new JLabel ("End Date:",JLabel.RIGHT);
+					  payPeriodStartLabel = new JLabel ("Start Date (MM/dd/yyyy):",JLabel.RIGHT);
+					  payPeriodEndLabel = new JLabel ("End Date (MM/dd/yyyy):",JLabel.RIGHT);
 					  					  
 					  payRecordPanelLabel= new JLabel ("Pay Record:",JLabel.LEFT);
 					  payRecordIDLabel = new JLabel ("Pay Record ID:",JLabel.RIGHT);
 					  monthlyIncomeLabel = new JLabel ("Monthly Income:",JLabel.RIGHT);
 					  monthNumberLabel = new JLabel ("Number of Months:",JLabel.RIGHT);
-					  hoursLabel = new JLabel ("Pay Hours:",JLabel.RIGHT);
+					  hoursLabel = new JLabel ("Hours Worked:",JLabel.RIGHT);
 					  hoursRateLabel = new JLabel ("Pay Rate:",JLabel.RIGHT);
 					  					  
 					  empStatusLabel = new JLabel ("Employee Status:",JLabel.RIGHT);
@@ -228,7 +224,7 @@ public class UserGUI extends JFrame implements ActionListener{
 				      
 		
 					  // text area and scroll pane
-				      textArea = new JTextArea(4, 25);
+				      textArea = new JTextArea(5, 40);
 				      textArea.setEditable(false);
 				      textArea.setLineWrap(false);
 				      textArea.setWrapStyleWord(false);
@@ -381,7 +377,7 @@ public class UserGUI extends JFrame implements ActionListener{
 				private void addEmpButtonClicked(){
 					
 					//Method to implement add button action
-					if(PayRoll.getNumberofrecords()<n){
+					if(Employee.getNumberOfEmployees()<n){
 						try {
 							eid = Integer.parseInt((eidField.getText().trim()));
 						}
@@ -488,22 +484,31 @@ public class UserGUI extends JFrame implements ActionListener{
 						}
 						
 				     	// add employee object
-				     	Address address1 = new Address(street, houseNumber, city, state, zipCode); // address object
+				     	//Address address1 = new Address(street, houseNumber, city, state, zipCode); // address object
 						//Employee employee1 = new Employee(firstName, lastName, address1, status, eid);
 				     	payroll_rec.createEmployee(street, houseNumber, city, state, zipCode, status, firstName, lastName, eid);
 						// show added person
-						String message = "Employee number added to list.";
-				     	textArea.setText(message);
-				     	textArea.append(Employee.employees[0].toString());
+						String message = "The following employee was added:\r\n";
+						textArea.setText(message);
+				     	textArea.append(Employee.employees[Employee.numberOfEmployees-1].toString());
+
 				     	
-				     	fnField.setText("");
-						lnField.setText("");
-						houseField.setText("");
-						streetField.setText("");
-						cityField.setText("");
-						stateField.setText("");
-						zipField.setText("");
+				     	// freeze employee fields
+				     	eidField.setEditable(false);
+				     	fnField.setEditable(false);
+						lnField.setEditable(false);
+						houseField.setEditable(false);
+						streetField.setEditable(false);
+						cityField.setEditable(false);
+						stateField.setEditable(false);
+						zipField.setEditable(false);
+				     	radFull.setEnabled(false);
+				     	radHourly.setEnabled(false);
+				     	addEmpButton.setEnabled(false);
+				     	
+				     	
 						}
+					
 					else {JOptionPane.showMessageDialog(null, "Array limit.\r\nNo more employees can be entered.");}
 				
 					
@@ -517,7 +522,9 @@ public class UserGUI extends JFrame implements ActionListener{
 					
 					
 					//Method to implement add button action
-					if(Person.numberOfPersons<recordArray.length){
+					
+					
+					if(PayRecord.getNumberOfPayRecord() <Employee.getNumberOfEmployees()){
 						
 						try {
 						String payPeriodIDs = payPeriodIDField.getText().trim();
@@ -532,11 +539,10 @@ public class UserGUI extends JFrame implements ActionListener{
 						}
 						
 						
-						
-						
+
 						try {
 						payPeriodStart = new SimpleDateFormat("MM/dd/yyyy").parse(payPeriodStartField.getText());
-						//payPeriodStart = 11-11-1998;
+						
 						
 
 						} catch (Exception e) {
@@ -577,63 +583,75 @@ public class UserGUI extends JFrame implements ActionListener{
 						
 						
 						
-						
+						if (radFull.isSelected()) {
 						try {
+							if (radHourly.isSelected()==true) {
+								monthlyIncome =0;
+							}
 						String monthlyIncomeS = monthlyIncomeField.getText().trim();
 						monthlyIncome = Integer.parseInt(monthlyIncomeS);
-						if (monthlyIncome<=0) throw new Exception();
+						
+						if (monthlyIncome<0) throw new Exception();
 
 						} catch (Exception e) {
-							JOptionPane.showMessageDialog(monthlyIncomeField, "Invalid entry for pay record ID.");
+							JOptionPane.showMessageDialog(monthlyIncomeField, "Invalid entry for monthly income.");
 							monthlyIncomeField.setText("");
 							monthlyIncomeField.requestFocus();
 							return;
 						}
+						} else {monthlyIncome=0;}
 						
 						
-						
-						
+						if (radFull.isSelected()) {
 						try {
+							if (radHourly.isSelected()==true) {
+								numberOfMonths =0;
+							}
 						String numberOfMonthsS = monthNumberField.getText().trim();
 						numberOfMonths = Integer.parseInt(numberOfMonthsS);
-						if (numberOfMonths<=0) throw new Exception();
+						
+						if (numberOfMonths<0) throw new Exception();
 
 						} catch (Exception e) {
-							JOptionPane.showMessageDialog(monthNumberField, "Invalid entry for pay record ID.");
+							JOptionPane.showMessageDialog(monthNumberField, "Invalid entry for number of months.");
 							monthNumberField.setText("");
 							monthNumberField.requestFocus();
 							return;
-						}
+						}} else {numberOfMonths=0;}
 						
 						
 						
-						
+						if (radHourly.isSelected()) {
 						try {
 						String numberOfHoursS = hoursField.getText().trim();
 						numberOfHours = Integer.parseInt(numberOfHoursS);
-						if (numberOfHours<=0) throw new Exception();
+						
+						if (numberOfHours<0) throw new Exception();
 
 						} catch (Exception e) {
-							JOptionPane.showMessageDialog(hoursField, "Invalid entry for pay record ID.");
+							JOptionPane.showMessageDialog(hoursField, "Invalid entry for hours worked.");
 							hoursField.setText("");
 							hoursField.requestFocus();
 							return;
-						}
+						} 
+						} else {numberOfHours = 0;}
 						
 						
 						
-						
-						try {
+						if (radHourly.isSelected()) {
+						try {							
 						String hourlyRateS = hoursRateField.getText().trim();
 						hourlyRate = Integer.parseInt(hourlyRateS);
-						if (hourlyRate<=0) throw new Exception();
+						
+						if (hourlyRate<0) throw new Exception();
 
 						} catch (Exception e) {
-							JOptionPane.showMessageDialog(hoursRateField, "Invalid entry for pay record ID.");
+							JOptionPane.showMessageDialog(hoursRateField, "Invalid entry for hourly rate.");
 							hoursRateField.setText("");
 							hoursRateField.requestFocus();
 							return;
 						}
+						} else {hourlyRate = 0;}
 						
 						
 						
@@ -642,7 +660,7 @@ public class UserGUI extends JFrame implements ActionListener{
 				     		monthlyIncome = Double.parseDouble(monthlyIncomeS);
 							String numberOfMonthsS = monthNumberField.getText().trim();
 							numberOfMonths = Integer.parseInt(numberOfMonthsS);
-							
+				
 				     	}
 
 						if (radHourly.isSelected()==true){
@@ -650,12 +668,35 @@ public class UserGUI extends JFrame implements ActionListener{
 							numberOfHours = Double.parseDouble(hoursFieldS);
 							String hoursRateFieldS = hoursRateField.getText().trim();
 							hourlyRate= Double.parseDouble(hoursRateFieldS);
+
 						}
 						
-						// add pay record object
+
 						
 						
+
 						
+						// add pay record
+						payroll_rec.createPayRecord(payPeriodID, payPeriodStart, payPeriodEnd, payRecordID, numberOfHours, hourlyRate, monthlyIncome, numberOfMonths, Employee.employees[Employee.numberOfEmployees-1], status);
+							
+								
+								
+						String message = "The following pay record has been added to Employee ID "+this.eid+":\r\n";
+				     	textArea.setText(message);
+				     	textArea.append(PayRoll.payRecords[PayRecord.numberOfPayRecord-1].toString());
+
+	
+				     	// reset employee fields
+						eidField.setText("");
+				     	fnField.setText("");
+						lnField.setText("");
+						houseField.setText("");
+						streetField.setText("");
+						cityField.setText("");
+						stateField.setText("");
+						zipField.setText("");
+						
+						// reset pay record fields
 						payPeriodIDField.setText("");
 						payPeriodStartField.setText("");
 						payPeriodEndField.setText("");
@@ -665,17 +706,23 @@ public class UserGUI extends JFrame implements ActionListener{
 						hoursField.setText("");
 						hoursRateField.setText("");
 						
-						// show added record
-						String message = "Employee number added to list.";
-				     	textArea.setText(message);
-			     	
-				     	
-				     	
+						// reset employee fields
+				     	eidField.setEditable(true);
+				     	fnField.setEditable(true);
+						lnField.setEditable(true);
+						houseField.setEditable(true);
+						streetField.setEditable(true);
+						cityField.setEditable(true);
+						stateField.setEditable(true);
+						zipField.setEditable(true);
+				     	radFull.setEnabled(true);
+				     	radHourly.setEnabled(true);
+				     	addEmpButton.setEnabled(true);
+						
+					} else { JOptionPane.showMessageDialog(null, "Please enter new employee first.");
+						
 					}
-			     	
-			     	
-			     	
-			     	
+  	
 				} // end pay record add method
 				
 				
@@ -683,7 +730,11 @@ public class UserGUI extends JFrame implements ActionListener{
 				
 				private void exitButtonClicked() {
 					// Method to implement system exit upon click
-					//JOptionPane.showMessageDialog(null, "Have a nice day.");
+					String happy ="";
+
+			     	for (int w = 0; w <PayRecord.getNumberOfPayRecord(); w++) 
+			     	happy += Employee.employees[w] +""+ PayRoll.payRecords[w]+"\r\n"; 
+			     	JOptionPane.showMessageDialog(null, happy);
 					System.exit(0);
 					
 				} // end exit button
@@ -715,12 +766,19 @@ public class UserGUI extends JFrame implements ActionListener{
 
 				// create a new GUI
 				UserGUI frame = new UserGUI(n);
+				// Initialize employee array
+				Employee.employees = new Employee[n];
+				
+				//personArray = new Person[localNumberOfPersons];
 				
 				// set GUI frame settings
 				frame.pack();
 			    frame.setLocationRelativeTo(null); 
 			    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			    frame.setVisible(true);
+			    
+			    
+			 
 			
 			}// end main
 			

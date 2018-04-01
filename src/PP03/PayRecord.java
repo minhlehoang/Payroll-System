@@ -57,14 +57,15 @@ public class PayRecord {
     // pay record constructor for full time employee
     public PayRecord(int id, Employee e, PayPeriod period, double mIncome, int mNum){
  	
- 	this.rID = id;
- 	this.employee = e;
- 	this.payPeriod = period;
- 	this.payHours = 0;
- 	this.payRate = 0;
- 	this.montlyIncome = mIncome;
- 	this.numMonths = mNum;
- 	this.payTax = new TaxIncome(grossPay());
+    	this.rID = id;
+    	this.employee = e;
+    	this.payPeriod = period;
+    	this.payHours = 0;
+    	this.payRate = 0;
+    	this.montlyIncome = mIncome;
+    	this.numMonths = mNum;
+    	this.payTax = new TaxIncome(grossPay());
+    	numberOfPayRecord++;
 
  }
 
@@ -73,7 +74,17 @@ public class PayRecord {
     
     // complete the code to compute the gross pay for the employee based on the employee status
 	public double grossPay(){
-		if(this.employee.getEmpStatus().toString() == "FullTime"){
+		
+		Double wage;
+		if (payHours<40) {
+			wage = payHours * payRate;
+		} else { wage = (40*payRate) + (payHours-40)*(payRate*1.25);}
+		
+		return (montlyIncome*numMonths)+wage;
+		
+		
+		
+		/*if(this.employee.getEmpStatus().toString() == "FullTime"){
 			return (montlyIncome*numMonths); //Fulltime status
 		}
 		else {
@@ -83,7 +94,7 @@ public class PayRecord {
 			else {
 				return (payHours * 10);
 			}
-		}
+		}*/
 	}
     
   // complete the code in this method to compute the net pay of the employee after taxes (state and federal)
@@ -166,15 +177,15 @@ public class PayRecord {
 	public static double getOtRate() {
 		return OT_RATE;
 	}
+	
+	  public static int getNumberOfPayRecord() {
+		return numberOfPayRecord;
+	}
 
-	
-	
-	
-	  // 2- add override method toString()
+	// 2- add override method toString()
 	@Override
 	public String toString() {
-		return "PayRecord [rID=" + rID + ", employee=" + employee + ", payPeriod=" + payPeriod + ", payTax=" + payTax
-				+ ", payHours=" + payHours + ", payRate=" + payRate + ", montlyIncome=" + montlyIncome + ", numMonths="
-				+ numMonths + "]";
+		return "PayRecord [rID= " + rID + ", " + payPeriod + ", Hours Worked= " + payHours + ", Hourly Rate= " + payRate + ", Monthly Income= " + montlyIncome + ", Number of Months= "
+				+ numMonths + ", Gross Pay= "+ grossPay() + ", Net Pay= " + netPay() +"]";
 	}
 }

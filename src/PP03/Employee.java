@@ -1,5 +1,7 @@
 package PP03;
 
+import javax.swing.JOptionPane;
+
 //****************************************
 //
 //			CIS 611	
@@ -57,10 +59,18 @@ public class Employee extends Person{
 
 	
 	
+	public static int getNumberOfEmployees() {
+		return numberOfEmployees;
+	}
+
+	public static void setNumberOfEmployees(int numberOfEmployees) {
+		Employee.numberOfEmployees = numberOfEmployees;
+	}
+
 	// 4- add override toString() method that overrides toString() in the superclass Person
 	@Override
 	public String toString() {
-		return "Employee [eID=" + eID + ", empStatus=" + empStatus + "]";
+		return "Employee [eID= " + eID + ", Status= " + empStatus + ", Full Name = "+ fName + ", Last Name = "+ lName + ", "+ address;
 	}
 	
 
