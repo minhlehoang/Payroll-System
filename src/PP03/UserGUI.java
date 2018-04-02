@@ -142,7 +142,7 @@ public class UserGUI extends JFrame implements ActionListener{
 				// constructor
 				UserGUI(int localNumberOfPersons){
 					payroll_rec = new PayRoll("PayRoll.txt", localNumberOfPersons);
-					
+					payroll_rec.readFromFile();
 					// create person array of size nPersons
 					//personArray = new Person[localNumberOfPersons];
 					
@@ -231,7 +231,7 @@ public class UserGUI extends JFrame implements ActionListener{
 				      
 		
 					  // text area and scroll pane
-				      textArea = new JTextArea(4, 45);
+				      textArea = new JTextArea(10, 45);
 				      textArea.setEditable(false);
 				      textArea.setLineWrap(true);
 				      textArea.setWrapStyleWord(true);
@@ -239,7 +239,7 @@ public class UserGUI extends JFrame implements ActionListener{
 				      jp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 				      jp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 				      
-				      textAreaStats = new JTextArea(4,15);
+				      textAreaStats = new JTextArea(10,45);
 				      textAreaStats.setEditable(false);
 				      textAreaStats.setLineWrap(true);
 				      textAreaStats.setWrapStyleWord(true);
@@ -511,7 +511,7 @@ public class UserGUI extends JFrame implements ActionListener{
 				     	textArea.append(Employee.employees[Employee.numberOfEmployees-1].toString());
 				     	
 				     	// display stats
-						payroll_rec.displayPayRecord(textAreaStats);
+						//payroll_rec.displayPayRecord(textAreaStats);
 
 				     	
 				     	// freeze employee fields
@@ -578,7 +578,21 @@ public class UserGUI extends JFrame implements ActionListener{
 						
 						try {
 							payPeriodEnd = new SimpleDateFormat("MM/dd/yyyy").parse(payPeriodEndField.getText());
-						
+							if(payPeriodEnd.getYear() < payPeriodStart.getYear()) {
+								throw new Exception();
+							}
+							else if(payPeriodEnd.getYear() == payPeriodStart.getYear()) {
+								if(payPeriodEnd.getMonth() < payPeriodStart.getMonth()) {
+									throw new Exception();
+								}
+								else if(payPeriodEnd.getMonth() == payPeriodStart.getMonth()) {
+									if(payPeriodEnd.getDate() <= payPeriodStart.getDate()) {
+										throw new Exception();
+									}
+								}
+							}
+							
+							
 
 						} catch (Exception e) {
 							JOptionPane.showMessageDialog(payPeriodEndField, "Invalid entry for end date.");
@@ -692,9 +706,11 @@ public class UserGUI extends JFrame implements ActionListener{
 
 						}
 						
-
+						
+						
 						
 						// calculate month difference
+						/*
 						if (radFull.isSelected()) {
 						try {
 
@@ -727,7 +743,7 @@ public class UserGUI extends JFrame implements ActionListener{
 							payPeriodStartField.requestFocus();
 							return;
 						}
-				
+						*/
 						// add pay record
 						payroll_rec.createPayRecord(payPeriodID, payPeriodStart, payPeriodEnd, payRecordID, numberOfHours, hourlyRate, monthlyIncome, numberOfMonths, Employee.employees[Employee.numberOfEmployees-1], status);
 							
@@ -738,7 +754,7 @@ public class UserGUI extends JFrame implements ActionListener{
 						String message = "The following record was added to Employee ID: " +this.eid+"\r\n";
 						textArea.setText(message);
 				     	textArea.append(PayRoll.payRecords[PayRecord.numberOfPayRecord-1].toString());
-						
+						payroll_rec.writeToFile();
 						
 	
 				     	// reset employee fields
