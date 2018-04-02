@@ -35,11 +35,8 @@ public class PayRoll {
 	private String fileName;
 	static PayRecord[] payRecords;
 	
-	//private static int numberOfRecords = 0;
-	
-	
-	private  double totalNetPay;
-	private  double avgNetPay;
+	private static double totalNetPay;
+	private static double avgNetPay;
 	
 	
 	
@@ -53,8 +50,7 @@ public class PayRoll {
 	}
 	
 	
-   public void readFromFile(){
-		
+   public void readFromFile(){		
 		// read the initial data from PayRoll file to create the full 
 	   // pay records with gross pay, taxes, and net pay, and then store it in PayRecord.txt file
 		
@@ -90,30 +86,48 @@ public class PayRoll {
 	}
 	
 	
-    public void displayPayRecord(JTextArea textArea){
+    public void displayPayRecord(JTextArea textAreaStats){
 		// it shows all payroll records for all currently added employee and the total net pay and average net pay in the GUI text area
     	// at should append data to text area, it must not overwrite data in the GUI text area
-		textArea.append(payRecords[PayRecord.numberOfPayRecord-1].toString());
-		textArea.append("\n");
+	
+		String stats = "Number of Employees: " + Employee.numberOfEmployees + "\r\nNumber of Pay Records: "+ PayRecord.numberOfPayRecord +"\r\nAverage Net Pay: " + avgNetPay() +"\r\nTotal Net Pay: " + totalNetPay();
+     	textAreaStats.setText(stats);
+	
 	}
 
     
    public double avgNetPay(){
-		
-		  	// returns the average of the total net pay of all added employees
-	   
-	   return 0;
-		
+	   double sum = 0;
+	   for(int i=0; i < PayRecord.getNumberOfPayRecord(); i++) {
+		   sum += payRecords[i].netPay();
+	   }
+	   avgNetPay = sum/PayRecord.getNumberOfPayRecord();
+	   return avgNetPay;
 	}
+   
+   
+   public double totalNetPay() {
+	   double total = 0;
+	   for(int i=0; i < PayRecord.getNumberOfPayRecord(); i++) {
+		   total += payRecords[i].netPay();
+	   }
+	   totalNetPay = total;
+	   return totalNetPay;
+   }
 
-
-//public static int getNumberOfRecords() {
-//	return numberOfRecords;
-//}
-
-
+   
 public PayRecord[] getPayRecords() {
 	return payRecords;
+}
+
+
+public static double getAvgNetPay() {
+	return avgNetPay;
+}
+
+
+public static double getTotalNetPay() {
+	return totalNetPay;
 }
 
 

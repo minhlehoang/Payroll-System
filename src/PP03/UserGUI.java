@@ -1,5 +1,6 @@
 package PP03;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import java.awt.BorderLayout;
@@ -9,7 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
-
+import java.time.Duration;
+import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -78,6 +81,7 @@ public class UserGUI extends JFrame implements ActionListener{
 	  private JLabel hoursRateLabel;
 	  
 	  private JLabel textAreaLabel;
+	  private JLabel textAreaStatsLabel;
 	  private JLabel empStatusLabel;
 	  
 	  private JTextField eidField;
@@ -108,6 +112,8 @@ public class UserGUI extends JFrame implements ActionListener{
 	  
 	  private JTextArea textArea;
 	  private JScrollPane jp;
+	  private JTextArea textAreaStats;
+	  private JScrollPane jpStats;
 	  
 	  private JRadioButton radFull;
 	  private JRadioButton radHourly;
@@ -185,7 +191,8 @@ public class UserGUI extends JFrame implements ActionListener{
 					  hoursRateLabel = new JLabel ("Pay Rate:",JLabel.RIGHT);
 					  					  
 					  empStatusLabel = new JLabel ("Employee Status:",JLabel.RIGHT);
-					  textAreaLabel = new JLabel ("Current Employee Record:", JLabel.LEFT);
+					  textAreaLabel = new JLabel ("Current Record:", JLabel.LEFT);
+					  textAreaStatsLabel = new JLabel ("Stats:", JLabel.LEFT);
 					  
 					  
 					  
@@ -224,13 +231,21 @@ public class UserGUI extends JFrame implements ActionListener{
 				      
 		
 					  // text area and scroll pane
-				      textArea = new JTextArea(5, 40);
+				      textArea = new JTextArea(4, 45);
 				      textArea.setEditable(false);
-				      textArea.setLineWrap(false);
-				      textArea.setWrapStyleWord(false);
+				      textArea.setLineWrap(true);
+				      textArea.setWrapStyleWord(true);
 				      jp = new JScrollPane(textArea);
 				      jp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 				      jp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+				      
+				      textAreaStats = new JTextArea(4,15);
+				      textAreaStats.setEditable(false);
+				      textAreaStats.setLineWrap(true);
+				      textAreaStats.setWrapStyleWord(true);
+				      jpStats = new JScrollPane(textAreaStats);
+				      jpStats.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				      jpStats.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 				      
 					  
 				      
@@ -337,6 +352,8 @@ public class UserGUI extends JFrame implements ActionListener{
 				   bottom.setLayout( new FlowLayout());
 				   bottom.add(textAreaLabel);
 				   bottom.add(jp);
+				   bottom.add(textAreaStatsLabel);
+				   bottom.add(jpStats);
 				   bottom.add(exitButton);
 				   
 				}
@@ -483,14 +500,18 @@ public class UserGUI extends JFrame implements ActionListener{
 							status = Status.Hourly;
 						}
 						
-				     	// add employee object
-				     	//Address address1 = new Address(street, houseNumber, city, state, zipCode); // address object
-						//Employee employee1 = new Employee(firstName, lastName, address1, status, eid);
+		
+						
+				     	// add employee 
 				     	payroll_rec.createEmployee(street, houseNumber, city, state, zipCode, status, firstName, lastName, eid);
+				     	
 						// show added person
 						String message = "The following employee was added:\r\n";
 						textArea.setText(message);
 				     	textArea.append(Employee.employees[Employee.numberOfEmployees-1].toString());
+				     	
+				     	// display stats
+						payroll_rec.displayPayRecord(textAreaStats);
 
 				     	
 				     	// freeze employee fields
@@ -539,7 +560,7 @@ public class UserGUI extends JFrame implements ActionListener{
 						}
 						
 						
-
+					
 						try {
 						payPeriodStart = new SimpleDateFormat("MM/dd/yyyy").parse(payPeriodStartField.getText());
 						
@@ -567,7 +588,7 @@ public class UserGUI extends JFrame implements ActionListener{
 						}
 						
 						
-
+						
 					
 						try {
 						String payRecordIDs = payRecordIDField.getText().trim();
@@ -673,18 +694,52 @@ public class UserGUI extends JFrame implements ActionListener{
 						
 
 						
-						
+						// calculate month difference
+						if (radFull.isSelected()) {
+						try {
 
+					    int m1 = payPeriodStart.getYear() * 12 + payPeriodStart.getMonth();
+					    int m2 = payPeriodEnd.getYear() * 12 + payPeriodEnd.getMonth();
+					    int difference = m2 - m1 + 1;
+					    
+						if (difference!=numberOfMonths) throw new Exception();
 						
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(monthNumberField, "Invalid entry.\r\nThe number of months must match the number of months between the start and end dates.");
+							monthNumberField.requestFocus();
+							return;
+						}
+						} // end month check
+						
+						
+						// calculate day difference 
+						try {
+							
+						long delta = (payPeriodEnd.getTime()-payPeriodStart.getTime())/86400000;
+						long superDelta = Math.abs(delta);
+						if (superDelta==0) throw new Exception();
+						if (payPeriodEnd.before(payPeriodStart)) throw new Exception();
+
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(payPeriodEndField, "Invalid entry.\r\nThe pay period must be at least one (1) day long.");
+							payPeriodEndField.setText("");
+							payPeriodStartField.setText("");
+							payPeriodStartField.requestFocus();
+							return;
+						}
+				
 						// add pay record
 						payroll_rec.createPayRecord(payPeriodID, payPeriodStart, payPeriodEnd, payRecordID, numberOfHours, hourlyRate, monthlyIncome, numberOfMonths, Employee.employees[Employee.numberOfEmployees-1], status);
 							
-								
-								
-						String message = "The following pay record has been added to Employee ID "+this.eid+":\r\n";
-				     	textArea.setText(message);
+						// display stats
+						payroll_rec.displayPayRecord(textAreaStats);
+						
+						// update current record display
+						String message = "The following record was added to Employee ID: " +this.eid+"\r\n";
+						textArea.setText(message);
 				     	textArea.append(PayRoll.payRecords[PayRecord.numberOfPayRecord-1].toString());
-
+						
+						
 	
 				     	// reset employee fields
 						eidField.setText("");
@@ -730,11 +785,18 @@ public class UserGUI extends JFrame implements ActionListener{
 				
 				private void exitButtonClicked() {
 					// Method to implement system exit upon click
-					String happy ="";
-
+					
+					
+					
+					// check to display array contents
+					/*
+					String displayCheck ="";
 			     	for (int w = 0; w <PayRecord.getNumberOfPayRecord(); w++) 
-			     	happy += Employee.employees[w] +""+ PayRoll.payRecords[w]+"\r\n"; 
+			     	displayCheck += Employee.employees[w] +""+ PayRoll.payRecords[w]+"\r\n"; 
 			     	JOptionPane.showMessageDialog(null, happy);
+					*/
+					
+					
 					System.exit(0);
 					
 				} // end exit button
@@ -766,10 +828,10 @@ public class UserGUI extends JFrame implements ActionListener{
 
 				// create a new GUI
 				UserGUI frame = new UserGUI(n);
+				
 				// Initialize employee array
 				Employee.employees = new Employee[n];
-				
-				//personArray = new Person[localNumberOfPersons];
+
 				
 				// set GUI frame settings
 				frame.pack();

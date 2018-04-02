@@ -74,32 +74,19 @@ public class PayRecord {
     
     // complete the code to compute the gross pay for the employee based on the employee status
 	public double grossPay(){
-		
 		Double wage;
 		if (payHours<40) {
 			wage = payHours * payRate;
-		} else { wage = (40*payRate) + (payHours-40)*(payRate*1.25);}
+		} 
+		else{ 
+			wage = (REG_HOURS*payRate) + (payHours-REG_HOURS)*(payRate*OT_RATE);
+		}
 		
 		return (montlyIncome*numMonths)+wage;
-		
-		
-		
-		/*if(this.employee.getEmpStatus().toString() == "FullTime"){
-			return (montlyIncome*numMonths); //Fulltime status
-		}
-		else {
-			if(payHours > 40) {
-				return (payHours * 10) + ((payHours - 40) * 1.25);
-			}
-			else {
-				return (payHours * 10);
-			}
-		}*/
 	}
     
   // complete the code in this method to compute the net pay of the employee after taxes (state and federal)
      public double netPay(){
-    	// netPay = grossPay() -= payTax;
     	 return grossPay() - payTax.compIncomeTax(grossPay());
   }
      
