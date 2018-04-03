@@ -56,12 +56,10 @@ public class PayPeriod {
 	public void setpEndDate(Date pEndDate) {
 		this.pEndDate = pEndDate;
 	}
-
 	
 	// 3- add override method toString() 
 	@Override
 	public String toString() {
 		return "PayPeriod [pID=" + pID + ", pStartDate=" + pStartDate + ", pEndDate=" + pEndDate + "]";
 	}
-	
 }

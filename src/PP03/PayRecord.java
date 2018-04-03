@@ -67,8 +67,7 @@ public class PayRecord {
     	this.payTax = new TaxIncome(grossPay());
     	numberOfPayRecord++;
 
- }
-
+    }
 
   // 3- complete the code in the following methods: grossPay() and netPay()
     
@@ -81,7 +80,6 @@ public class PayRecord {
 		else{ 
 			wage = (REG_HOURS*payRate) + (payHours-REG_HOURS)*(payRate*OT_RATE);
 		}
-		
 		return (montlyIncome*numMonths)+wage;
 	}
     

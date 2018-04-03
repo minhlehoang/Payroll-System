@@ -27,6 +27,13 @@ public class test {
 				while (input.hasNext()) {
 					String line = input.nextLine();
 					String[] data = line.split(",");
+					if(data.length == 10) {
+						int emp_id = Integer.parseInt(data[1]);
+						String firstname = data[2];
+						String lastname = data[3];
+						String status = data[4];
+						System.out.print("employee");
+					}
 					for(i=0; i < data.length; i++) {
 						output += (data[i]);
 					}

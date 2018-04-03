@@ -57,7 +57,29 @@ public class PayRoll {
 	}
 	
 	
-   public void readFromFile(){		
+   public void readFromFile() throws ParseException{	
+	   int emp_id;
+	   String firstname;
+	   String lastname;
+	   String status_str;	   
+	   int housenumber;
+	   String street;
+	   String city;
+	   String state;
+	   int zipcode;
+	   
+	   int payid;
+	   int recid;
+	   Date startday;
+	   Date endday;
+	   double payHours = 0;
+	   double payRate = 0;
+	   double monthlyIncome = 0;
+	   int numMonths = 0;
+	   
+	   Status status = null;
+	   
+	   
 		// read the initial data from PayRoll file to create the full
 	   // pay records with gross pay, taxes, and net pay, and then store it in PayRecord.txt file
 	  	String output = "";
@@ -79,27 +101,79 @@ public class PayRoll {
 			while (input.hasNext()) {
 				String line = input.nextLine();
 				String[] data = line.split(",");
-				for(i=0; i < data.length; i++) {
-					output += (data[i]);
+				if(data[0].trim().equals("employee")) {
+					emp_id = Integer.parseInt(data[1].trim());
+					firstname = data[2].trim();
+					lastname = data[3].trim();
+					status_str = data[4].trim();
+					if(status_str.equals("FULLTIME")) {
+						status = Status.FullTime;
+					}
+					else {
+						status = Status.Hourly;
+					}
+					street = data[5].trim();
+					housenumber = Integer.parseInt(data[6].trim());
+					city = data[7].trim();
+					state = data[8].trim();
+					zipcode = Integer.parseInt(data[9].trim());
+					createEmployee(street, housenumber, city, state, zipcode, status, firstname, lastname, emp_id);
+					//JOptionPane.showMessageDialog(null, emp_id + firstname +lastname + status + street + housenumber + city + state + zipcode);
 				}
-				output = output + "\n";
+				else if(data[0].trim().equals("payRecord")){						
+					payid = Integer.parseInt(data[1].trim());
+					emp_id = Integer.parseInt(data[2].trim());
+					if(data[3].trim().contains("<m>")) {						
+						monthlyIncome = Double.parseDouble(data[3].trim().substring(0, data[3].trim().indexOf("<")));
+						status = Status.FullTime;
+						payHours = 0;						
+					}
+					if(data[3].trim().contains("<h>")) {
+						payHours = Double.parseDouble(data[3].trim().substring(0, data[3].trim().indexOf("<")));
+						status = Status.Hourly;
+						monthlyIncome = 0;
+					}
+					
+					if(data[4].trim().contains("<n>")) {
+						numMonths = Integer.parseInt(data[4].trim().substring(0, data[4].trim().indexOf("<")));
+						status = Status.FullTime;
+						payRate = 0;
+					}
+					if(data[4].trim().contains("<r>")) {
+						payRate = Double.parseDouble(data[4].trim().substring(0, data[4].trim().indexOf("<")));
+						status = Status.Hourly;
+						numMonths = 0;
+					}
+					
+					recid = Integer.parseInt(data[5].trim());
+					
+					startday = new SimpleDateFormat("MM/dd/yyyy").parse(data[6].trim());
+					endday = new SimpleDateFormat("MM/dd/yyyy").parse(data[7].trim());
+					for(int z = 0; z < Employee.numberOfEmployees; z++) {
+						if(Integer.parseInt(data[2].trim()) == Employee.employees[z].geteID()) {
+							createPayRecord(payid, startday, endday, recid, payHours, payRate, monthlyIncome, numMonths, Employee.employees[z], status);
+							
+							output += Employee.employees[z].toString() + "\n" + payRecords[z].toString() + "\n" + "Total Net Pay: " + String.format("%.2f", totalNetPay()) + "\n" + "Average Net Pay: " + String.format("%.2f", avgNetPay()) + "\n" + "\n";
+							try {
+								File file_output = new File("outputfile.txt");
+								FileWriter fileWriter = new FileWriter(file_output);
+								fileWriter.write(output);
+								fileWriter.flush();
+								fileWriter.close();
+								
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
 			}
-			System.out.print(output + "\n");
 			input.close(); // Close the file
+			JOptionPane.showMessageDialog(null, PayRecord.numberOfPayRecord + " employee pay records have been created.");
 	    }
 	    else {
 	        JOptionPane.showMessageDialog(null,"No file selected");
 	    }
-		try {
-			File file_output = new File("outputfile.txt");
-			FileWriter fileWriter = new FileWriter(file_output);
-			fileWriter.write(output);
-			fileWriter.flush();
-			fileWriter.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	} 
    
    
@@ -123,7 +197,8 @@ public class PayRoll {
 			// true = append file
 			fw = new FileWriter(file.getAbsoluteFile(), true);
 			bw = new BufferedWriter(fw);
-			
+			bw.write(Employee.employees[Employee.numberOfEmployees-1].toString());
+			bw.write("\n");
 			bw.write(payRecords[PayRecord.numberOfPayRecord - 1].toString() + "\n" + "Total Net Pay: " + String.format("%.2f", totalNetPay()) + "\n" + "Average Net Pay: " + String.format("%.2f", avgNetPay()) + "\n");
 			bw.write("\n");
 

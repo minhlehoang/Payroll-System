@@ -1,9 +1,15 @@
-employee 1011 Jack Johnson FULLTIME 1246 Drake St 104H Fort Collins Coloardo 80526
-employee 1021 John Filis HOURLY 1022 Shorebird Dr 12A Fort Collins Colorado 80525
-employee 1034 Alice Walter FULLTIME 5811 S College Ave 156C Fort Collins Colorado 80525 
-payRecord 15 1011 3500<m> 8<n> 4 03/16/2015 11/20/2015
-payRecord 10 1021 30<h> 15.8<r> 1 01/01/2016 01/05/2016
-payRecord 18 1034 5000<m> 6<n> 7 06/14/2015 12/18/2015
-PayRecord [rID= 123, PayPeriod [pID=112, pStartDate=Wed Sep 12 00:00:00 MDT 2018, pEndDate=Fri Sep 14 00:00:00 MDT 2018], Hours Worked= 13.0, Hourly Rate= 3232.0, Monthly Income= 0.0, Number of Months= 0, Gross Pay= 42016.0, Net Pay= 27310.399999999998]
-Total Net Pay: 27310.40
-Average Net Pay: 27310.40
+Employee [eID= 1011, Status= FullTime, Full Name = Jack, Last Name = Johnson, Address [street=1246 Drake St, houseNumber=104, city=Fort Collins, state=Coloardo, zipCode=80526]
+PayRecord [rID= 4, PayPeriod [pID=15, pStartDate=Mon Mar 16 00:00:00 MDT 2015, pEndDate=Fri Nov 20 00:00:00 MST 2015], Hours Worked= 0.0, Hourly Rate= 0.0, Monthly Income= 3500.0, Number of Months= 8, Gross Pay= 28000.0, Net Pay= 18200.0]
+Total Net Pay: 18200.00
+Average Net Pay: 18200.00
+
+Employee [eID= 1021, Status= Hourly, Full Name = John, Last Name = Filis, Address [street=1022 Shorebird Dr, houseNumber=12, city=Fort Collins, state=Colorado, zipCode=80525]
+PayRecord [rID= 1, PayPeriod [pID=10, pStartDate=Fri Jan 01 00:00:00 MST 2016, pEndDate=Tue Jan 05 00:00:00 MST 2016], Hours Worked= 30.0, Hourly Rate= 15.8, Monthly Income= 0.0, Number of Months= 0, Gross Pay= 474.0, Net Pay= 308.1]
+Total Net Pay: 18508.10
+Average Net Pay: 9254.05
+
+Employee [eID= 1034, Status= FullTime, Full Name = Alice, Last Name = Walter, Address [street=5811 S College Ave, houseNumber=156, city=Fort Collins, state=Colorado, zipCode=80525]
+PayRecord [rID= 7, PayPeriod [pID=18, pStartDate=Sun Jun 14 00:00:00 MDT 2015, pEndDate=Fri Dec 18 00:00:00 MST 2015], Hours Worked= 0.0, Hourly Rate= 0.0, Monthly Income= 5000.0, Number of Months= 6, Gross Pay= 30000.0, Net Pay= 19500.0]
+Total Net Pay: 38008.10
+Average Net Pay: 12669.37
+

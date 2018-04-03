@@ -17,7 +17,6 @@ package PP03;
 //
 //****************************************
 
-
 public class Person {
 	
 	protected String fName ;
@@ -74,6 +73,4 @@ public class Person {
 	public String toString() {
 		return "Person [fName=" + fName + ", lName=" + lName + ", address=" + address + "]";
 	}
-    
-
 }

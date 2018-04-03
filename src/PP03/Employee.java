@@ -28,7 +28,6 @@ public class Employee extends Person{
     static Employee[] employees;
     public static int numberOfEmployees=0;
    
-    
     // 2- add the subclass Employee constructor that calls the super Person class constructor, you should provide input data for all parent class data fields
 	public Employee(String fName, String lName, Address address, Status empStatus, int eID) {
 		super();
@@ -57,8 +56,6 @@ public class Employee extends Person{
 		this.empStatus = empStatus;
 	}
 
-	
-	
 	public static int getNumberOfEmployees() {
 		return numberOfEmployees;
 	}
@@ -72,7 +69,4 @@ public class Employee extends Person{
 	public String toString() {
 		return "Employee [eID= " + eID + ", Status= " + empStatus + ", Full Name = "+ fName + ", Last Name = "+ lName + ", "+ address;
 	}
-	
-
-	
 }
