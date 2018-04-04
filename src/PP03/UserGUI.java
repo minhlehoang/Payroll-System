@@ -454,7 +454,7 @@ public class UserGUI extends JFrame implements ActionListener{
 						try {
 						String zipS = zipField.getText().trim();
 						zipCode = Integer.parseInt(zipS);
-						if (zipCode<0) throw new Exception();
+						if (zipCode<0 || zipS.length() != 5) throw new Exception();
 
 						} catch (Exception e) {
 							JOptionPane.showMessageDialog(fnField, "Invalid entry for zip code.\r\nZip code must be five digits.");
